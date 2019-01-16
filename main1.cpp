@@ -1,8 +1,8 @@
-//задача о черепашке
+//Р·Р°РґР°С‡Р° Рѕ С‡РµСЂРµРїР°С€РєРµ
 /*
-из левой верхней клетки должна доползти в правую нижнюю клетку.
-может ползти только вниз и право.
-собрать максимальную последовательность чисел при движении.
+РёР· Р»РµРІРѕР№ РІРµСЂС…РЅРµР№ РєР»РµС‚РєРё РґРѕР»Р¶РЅР° РґРѕРїРѕР»Р·С‚Рё РІ РїСЂР°РІСѓСЋ РЅРёР¶РЅСЋСЋ РєР»РµС‚РєСѓ.
+РјРѕР¶РµС‚ РїРѕР»Р·С‚Рё С‚РѕР»СЊРєРѕ РІРЅРёР· Рё РїСЂР°РІРѕ.
+СЃРѕР±СЂР°С‚СЊ РјР°РєСЃРёРјР°Р»СЊРЅСѓСЋ РїРѕСЃР»РµРґРѕРІР°С‚РµР»СЊРЅРѕСЃС‚СЊ С‡РёСЃРµР» РїСЂРё РґРІРёР¶РµРЅРёРё.
 */
 
 //the task about the turtle
@@ -17,11 +17,11 @@ collect the maximum sequence of numbers when moving.
 #include <time.h>
 #include <Windows.h>
 #define MAX 10
-#define LINE 5
+#define LINE 7
 #define COLUMN 5
 
 
-//генерация массива / the generation of the array
+//РіРµРЅРµСЂР°С†РёСЏ РјР°СЃСЃРёРІР° / the generation of the array
 void genArr(int arr[][COLUMN], int L)
 {
 	for (int i = 0; i < L; i++)
@@ -29,79 +29,122 @@ void genArr(int arr[][COLUMN], int L)
 			arr[i][j] = rand() % MAX;
 }
 
-//печать массива / printing an array
+//РїРµС‡Р°С‚СЊ РјР°СЃСЃРёРІР° / printing an array
 void printArr(int arr[][COLUMN], int L)
 {
 	for (int i = 0; i < L; i++)
 	{
 		for (int j = 0; j < COLUMN; j++)
-			printf("%2d  ", arr[i][j]);
+			printf("%4d ", arr[i][j]);
 		putchar('\n');
 	}
 	putchar('\n');
 }
 
-// создаём вспомогательный массив / create an auxiliary array
+// СЃРѕР·РґР°С‘Рј РІСЃРїРѕРјРѕРіР°С‚РµР»СЊРЅС‹Р№ РјР°СЃСЃРёРІ / create an auxiliary array
 void secondMatr(int arr[][COLUMN], int arr2[][COLUMN], int L)
 {
 	arr2[0][0] = arr[0][0];
 
-	for (int j = 1; j < L; j++)
+	for (int j = 1; j < COLUMN; j++)
 		arr2[0][j] = arr2[0][j - 1] + arr[0][j];
 	
-	for (int i = 1; i < COLUMN; i++)
+	for (int i = 1; i < L; i++)
 		arr2[i][0] = arr2[i-1][0] + arr[i][0];
 
-	for (int i = 1; i < COLUMN; i++)
-		for (int j = 1; j < L; j++)
+	for (int i = 1; i < L; i++)
+		for (int j = 1; j < COLUMN; j++)
 			if (arr2[i - 1][j] > arr2[i][j - 1])
 				arr2[i][j] = arr2[i - 1][j] + arr[i][j];
 			else
 				arr2[i][j] = arr2[i][j - 1] + arr[i][j];
 }
 
-// печать вспомогательного массива / printing an auxiliary array
+// РїРµС‡Р°С‚СЊ РІСЃРїРѕРјРѕРіР°С‚РµР»СЊРЅРѕРіРѕ РјР°СЃСЃРёРІР° / printing an auxiliary array
 void printSecondMatr(int arr2[][COLUMN], int L)
 {
-	for (int i = 0; i < COLUMN; i++)
+	for (int i = 0; i < L; i++)
 	{
-		for (int j = 0; j < L; j++)
-			printf("%2d  ", arr2[i][j]);
+		for (int j = 0; j < COLUMN; j++)
+			printf("%4d ", arr2[i][j]);
 		putchar('\n');
 	}
 	putchar('\n');
 }
 
-// изменяем исходный массив, обозначая в нём путь (знаки минус) / change the original array, denoting the path (minus signs)
-void markWay(int arr[][COLUMN], int arr2[][COLUMN], int L)
+// РёР·РјРµРЅСЏРµРј РјР°СЃСЃРёРІ, РѕР±РѕР·РЅР°С‡Р°СЏ РІ РЅС‘Рј РїСѓС‚СЊ (-1) / change the array, denoting the path (-1)
+void markWay(int arr2[][COLUMN], int L)
 {
-	int i = 0;
-	int j = 0;
-	int select_elem;
+	int pathValue = -1;
+	int i = L - 1;
+	int j = COLUMN - 1;
 
-	arr[0][0] *= (-1); // чтобы было такое же значение, но только со знаком минус (to have the same value, but only with a minus sign)
+	arr2[i][j] = pathValue; 
 
-	while (i < L && j < COLUMN)
+	while (i > 0 && j > 0)
 	{
-		if (arr2[i + 1][j] > arr2[i][j + 1])
+		if (arr2[i - 1][j] > arr2[i][j - 1])
 		{
-			i++;
-			arr[i][j] *= (-1);
+			i--;
+			arr2[i][j] = pathValue;
 		}
-		else
+		else if (arr2[i - 1][j] < arr2[i][j - 1])
 		{
-			j++;
-			arr[i][j] *= (-1);
+			j--;
+			arr2[i][j] = pathValue;
 		}
+		else if (arr2[i - 1][j] == arr2[i][j - 1])
+			if (i >= 2 && j >= 2)
+			{
+				if (arr2[i - 2][j] > arr2[i][j - 2])
+				{
+					i--;
+					arr2[i][j] = pathValue;
+				}
+				else
+				{
+					j--;
+					arr2[i][j] = pathValue;
+				}
+			}
+			else if (i < 2 && j >= 2)
+				if (arr2[i][j - 2] < arr2[i - 1][j - 1])
+				{
+					i--;
+					arr2[i][j] = pathValue;
+				}
+				else
+				{
+					j--;
+					arr2[i][j] = pathValue;
+				}
+			else if (i >= 2 && j < 2)
+				if (arr2[i - 2][j] > arr2[i - 1][j - 1])
+				{
+					i--;
+					arr2[i][j] = pathValue;
+				}
+				else
+				{
+					j--;
+					arr2[i][j] = pathValue;
+				}
 	}
+
+	if (i == 0 && j > 0)
+		for (int k = 0; k < j; k++)
+			arr2[i][k] = pathValue;
+	else if (j == 0 && i > 0)
+		for (int k = 0; k < i; k++)
+			arr2[k][j] = pathValue;
 }
 
-void printWayCheck(int arr[][COLUMN], int L)
+void printWayCheck(int arr2[][COLUMN], int L)
 {
 	for (int i = 0; i < L; i++)
 	{
 		for (int j = 0; j < COLUMN; j++)
-			printf("%2d  ", arr[i][j]);
+			printf("%4d ", arr2[i][j]);
 		putchar('\n');
 	}
 	putchar('\n');
@@ -110,13 +153,13 @@ void printWayCheck(int arr[][COLUMN], int L)
 
 void SetColor(int text, int background) 
 {
-	/*Получение дескриптора*/
+	/*РџРѕР»СѓС‡РµРЅРёРµ РґРµСЃРєСЂРёРїС‚РѕСЂР° / Getting a descriptor*/
 	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 	SetConsoleTextAttribute(hConsole, (WORD)((background << 4) | text));
 }
 
 
-void printWay(int arr[][COLUMN], int L)
+void printWay(int arr[][COLUMN], int arr2[][COLUMN], int L)
 {
 	enum ConsoleColor {
 		Black = 0,
@@ -140,20 +183,20 @@ void printWay(int arr[][COLUMN], int L)
 
 	CONSOLE_SCREEN_BUFFER_INFO start_attribute;
 	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-	GetConsoleScreenBufferInfo(hConsole, &start_attribute); // исходный цвет консоли / the original color of the console
+	GetConsoleScreenBufferInfo(hConsole, &start_attribute); // РёСЃС…РѕРґРЅС‹Р№ С†РІРµС‚ РєРѕРЅСЃРѕР»Рё / the original color of the console
 
 
 	for (int i = 0; i < L; i++)
 	{
 		for (int j = 0; j < COLUMN; j++)
 		{
-			if (arr[i][j] >= 0)
-				printf("%2d  ", arr[i][j]);
+			if (arr2[i][j] >= 0)
+				printf("%4d ", arr[i][j]);
 			else
 			{
-				SetColor(Magenta, Black); // изменяем цвет, функцию SetColor() пишем отдельно / change the color, SetColor() function write separately
-				printf("%2d  ", arr[i][j] * (-1)); // возвращаем исходное неотрицательное значение элемента массива / return the original non-negative value of the array element
-				SetConsoleTextAttribute(hConsole, start_attribute.wAttributes); // возвращаем исходный цвет консоли / return the original color of the console
+				SetColor(Magenta, Black); // РёР·РјРµРЅСЏРµРј С†РІРµС‚, С„СѓРЅРєС†РёСЋ SetColor() РїРёС€РµРј РѕС‚РґРµР»СЊРЅРѕ / change the color, SetColor() function write separately
+				printf("%4d ", arr[i][j]);
+				SetConsoleTextAttribute(hConsole, start_attribute.wAttributes); // РІРѕР·РІСЂР°С‰Р°РµРј РёСЃС…РѕРґРЅС‹Р№ С†РІРµС‚ РєРѕРЅСЃРѕР»Рё / return the original color of the console
 			}
 		}
 		putchar('\n');
@@ -163,6 +206,7 @@ void printWay(int arr[][COLUMN], int L)
 
 int main()
 {
+	srand(time(0));
 	int arr[LINE][COLUMN];
 	genArr(arr, LINE);
 	printArr(arr, LINE);
@@ -171,12 +215,11 @@ int main()
 	int matr[LINE][COLUMN];
 	secondMatr(arr, matr, LINE);
 	printSecondMatr(matr, LINE);
-	
-	
 
-	markWay(arr, matr, LINE);
+	markWay(matr, LINE);
 
-	printWay(arr, LINE);
+	//printWayCheck(matr, LINE); // function for check / С„СѓРЅРєС†РёСЏ РґР»СЏ РїСЂРѕРІРµСЂРєРё
+	printWay(arr, matr, LINE);
 	putchar('\n');
 
 
