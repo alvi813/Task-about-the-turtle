@@ -48,9 +48,9 @@ void secondMatr(int arr[][COLUMN], int arr2[][COLUMN], int L)
 
 	for (int j = 1; j < COLUMN; j++)
 		arr2[0][j] = arr2[0][j - 1] + arr[0][j];
-	
+
 	for (int i = 1; i < L; i++)
-		arr2[i][0] = arr2[i-1][0] + arr[i][0];
+		arr2[i][0] = arr2[i - 1][0] + arr[i][0];
 
 	for (int i = 1; i < L; i++)
 		for (int j = 1; j < COLUMN; j++)
@@ -79,7 +79,7 @@ void markWay(int arr2[][COLUMN], int L)
 	int i = L - 1;
 	int j = COLUMN - 1;
 
-	arr2[i][j] = pathValue; 
+	arr2[i][j] = pathValue;
 
 	while (i > 0 && j > 0)
 	{
@@ -108,6 +108,7 @@ void markWay(int arr2[][COLUMN], int L)
 				}
 			}
 			else if (i < 2 && j >= 2)
+			{
 				if (arr2[i][j - 2] < arr2[i - 1][j - 1])
 				{
 					i--;
@@ -118,7 +119,9 @@ void markWay(int arr2[][COLUMN], int L)
 					j--;
 					arr2[i][j] = pathValue;
 				}
+			}
 			else if (i >= 2 && j < 2)
+			{
 				if (arr2[i - 2][j] > arr2[i - 1][j - 1])
 				{
 					i--;
@@ -129,6 +132,12 @@ void markWay(int arr2[][COLUMN], int L)
 					j--;
 					arr2[i][j] = pathValue;
 				}
+			}
+			else if (i < 2 && j < 2)
+			{
+				i--;
+				arr2[i][j] = pathValue;
+			}
 	}
 
 	if (i == 0 && j > 0)
@@ -151,7 +160,7 @@ void printWayCheck(int arr2[][COLUMN], int L)
 }
 
 
-void SetColor(int text, int background) 
+void SetColor(int text, int background)
 {
 	/*Получение дескриптора / Getting a descriptor*/
 	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -207,10 +216,11 @@ void printWay(int arr[][COLUMN], int arr2[][COLUMN], int L)
 int main()
 {
 	srand(time(0));
+	//int arr[LINE][COLUMN] = { {9,2,5,4,8},{2,5,8,2,2},{5,3,6,7,9},{7,5,4,4,8},{1,5,5,3,9},{6,5,7,4,0},{0,4,0,0,2} };
 	int arr[LINE][COLUMN];
 	genArr(arr, LINE);
 	printArr(arr, LINE);
-	
+
 
 	int matr[LINE][COLUMN];
 	secondMatr(arr, matr, LINE);
